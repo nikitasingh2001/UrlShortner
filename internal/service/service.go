@@ -6,10 +6,10 @@ import (
 	"urlshortner/internal/constant"
 	"urlshortner/internal/database"
 	"urlshortner/internal/helper"
-	"urlshortner/internal/types"
+	"urlshortner/internal/models"
 )
 
-func ShortenURL(longURL string) (*types.UrlDb, error) {
+func ShortenURL(longURL string) (*models.UrlDb, error) {
 	existingRecord, _ := database.Mgr.GetUrlFromLongUrl(longURL, constant.UrlCollection)
 
 	if existingRecord.UrlCode != "" {
@@ -22,7 +22,7 @@ func ShortenURL(longURL string) (*types.UrlDb, error) {
 		record, _ := database.Mgr.GetUrlFromCode(code, constant.UrlCollection)
 
 		if record.UrlCode == "" {
-			url := &types.UrlDb{
+			url := &models.UrlDb{
 				CreatedAt: time.Now().Unix(),
 				ExpiredAt: time.Now().Add(2 * time.Minute).Unix(),
 				UrlCode:   code,
@@ -35,17 +35,12 @@ func ShortenURL(longURL string) (*types.UrlDb, error) {
 				return nil, err
 			}
 
-			go func(code string) {
-				time.Sleep(2 * time.Minute)
-				database.Mgr.DeleteUrlByCode(code, constant.UrlCollection)
-			}(code)
-
 			return url, nil
 		}
 	}
 }
 
-func GetLongURL(code string) (*types.UrlDb, error) {
+func GetLongURL(code string) (*models.UrlDb, error) {
 	record, _ := database.Mgr.GetUrlFromCode(code, constant.UrlCollection)
 
 	if record.UrlCode == "" {

@@ -3,8 +3,11 @@ module urlshortner
 go 1.21.3
 
 require (
+	github.com/BurntSushi/toml v1.3.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
+	github.com/robfig/cron/v3 v3.0.1
+	github.com/sirupsen/logrus v1.9.3
 	go.mongodb.org/mongo-driver v1.12.1
 )
 

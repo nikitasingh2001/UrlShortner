@@ -3,16 +3,18 @@ package controller
 import (
 	"net/http"
 	"urlshortner/internal/constant"
+	"urlshortner/internal/logger"
+	"urlshortner/internal/models"
 	"urlshortner/internal/service"
-	"urlshortner/internal/types"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ShortTheUrl(c *gin.Context) {
-	var shortUrlBody types.ShortUrlBody
+	var shortUrlBody models.ShortUrlBody
 	err := c.BindJSON(&shortUrlBody)
 	if err != nil {
+		logger.Log.Error("Error in binding: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": true, "message": constant.BindError})
 		return
 	}
@@ -31,6 +33,7 @@ func RedirectURL(c *gin.Context) {
 
 	record, err := service.GetLongURL(code)
 	if err != nil {
+		logger.Log.Error("Error in getting the longURL ", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": true, "message": err.Error()})
 		return
 	}
