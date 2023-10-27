@@ -8,17 +8,18 @@ import (
 	"urlshortner/internal/constant"
 	"urlshortner/internal/logger"
 	"urlshortner/internal/models"
+	"urlshortner/internal/repository"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-type test struct {
-	connection *mongo.Client
-	ctx        context.Context
-	cancel     context.CancelFunc
-}
+//type test struct {
+//	connection *mongo.Client
+//	ctx        context.Context
+//	cancel     context.CancelFunc
+//}
 
 var Mgr Manager
 
@@ -47,7 +48,7 @@ func ConnectDb() {
 	if err != nil {
 		panic(err)
 	}
-	Mgr = &test{connection: client, ctx: ctx, cancel: cancel}
+	Mgr = &repository.Test{Connection: client, Ctx: ctx, Cancel: cancel}
 }
 
 func DeleteExpiredURLs() {
