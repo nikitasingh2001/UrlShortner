@@ -15,12 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-//type test struct {
-//	connection *mongo.Client
-//	ctx        context.Context
-//	cancel     context.CancelFunc
-//}
-
 var Mgr Manager
 
 type Manager interface {
