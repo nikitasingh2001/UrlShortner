@@ -4,10 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"os"
+	"strconv"
 	"urlshortner/internal/config"
 	"urlshortner/internal/controller"
-	"urlshortner/internal/logger"
 )
 
 func ClientRoutes() *gin.Engine {
@@ -17,7 +16,8 @@ func ClientRoutes() *gin.Engine {
 	r.POST("/v1/url/short", controller.ShortTheUrl)
 	r.GET("/v1/url/url/:code", controller.RedirectURL)
 
-	if err := r.Run(":" + os.Getenv("PORT")); err != nil {
+	applicationConfig := config.GetConfig()
+	if err := r.Run(":" + strconv.Itoa(applicationConfig.Application.Port)); err != nil {
 		log.Printf("Failed to run server: %v", err)
 	}
 
@@ -26,18 +26,11 @@ func ClientRoutes() *gin.Engine {
 
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		configPath := "conf/config.toml"
-		authConfig, err := config.ReadAuthConfig(configPath)
 
-		if err != nil {
-			logger.Log.Error("Error reading auth config:", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": true, "message": "Authentication failed"})
-			c.Abort()
-			return
-		}
+		authConfig := config.GetConfig()
 
 		username, password, ok := c.Request.BasicAuth()
-		if !ok || username != authConfig.Auth.Username || password != authConfig.Auth.Password {
+		if !ok || username != authConfig.AuthUser.Username || password != authConfig.AuthUser.Password {
 			c.Header("WWW-Authenticate", `Basic realm="Authorization Required"`)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": true, "message": "Authentication failed, Incorrect password"})
 			c.Abort()

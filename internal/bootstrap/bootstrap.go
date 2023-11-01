@@ -1,20 +1,26 @@
 package bootstrap
 
 import (
-	"github.com/joho/godotenv"
+	"context"
 	"github.com/robfig/cron/v3"
+	"urlshortner/internal/config"
 	"urlshortner/internal/database"
 	"urlshortner/internal/router"
 )
 
-func Initalize() {
-	err := godotenv.Load("conf/.toml")
-	if err != nil {
-		panic(err)
-	}
+var loadConfig = config.LoadConfig
+
+func Initialize(ctx context.Context, basePath string, env string) {
+
+	baseInit(ctx, basePath, env)
+
 	database.ConnectDb()
 	StartCronJob()
 	router.ClientRoutes()
+}
+
+func baseInit(ctx context.Context, basePath string, env string) {
+	loadConfig(basePath, env)
 }
 
 var Cron *cron.Cron
