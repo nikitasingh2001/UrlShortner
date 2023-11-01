@@ -3,8 +3,8 @@ package database
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
+	"urlshortner/internal/config"
 	"urlshortner/internal/constant"
 	"urlshortner/internal/logger"
 	"urlshortner/internal/models"
@@ -25,8 +25,11 @@ type Manager interface {
 }
 
 func ConnectDb() {
-	uri := os.Getenv("DB_HOST")
-	client, err := mongo.NewClient(options.Client().ApplyURI(fmt.Sprintf("%s%s", "mongodb://", uri)))
+
+	databaseConfig := config.GetConfig()
+	host := databaseConfig.Database.Host
+
+	client, err := mongo.NewClient(options.Client().ApplyURI(fmt.Sprintf("mongodb://%s", host)))
 	if err != nil {
 		logger.Log.Error("Error while making the new mongoDB client", err)
 		panic(err)

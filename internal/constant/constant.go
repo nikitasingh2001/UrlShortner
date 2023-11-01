@@ -4,6 +4,17 @@ const (
 	UrlShortnerPath = "/short"
 
 	RedirectUrlPath = "/url/:code"
+
+	BasePath = "base_path"
+
+	// Default base path
+	DefaultBasePath = "."
+
+	// Environment
+	Env = "env"
+
+	// Dev environment
+	Development = "dev"
 )
 
 const (

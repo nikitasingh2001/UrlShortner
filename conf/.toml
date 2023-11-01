@@ -1,6 +1,0 @@
-PORT=8000
-DB_HOST=localhost:27017
-API_VERSION=v1
-
-
-
